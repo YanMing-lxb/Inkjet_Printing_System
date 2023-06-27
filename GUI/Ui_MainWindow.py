@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'd:\Desktop\工具开发\喷墨打印前端\MainWindow.ui'
+# Form implementation generated from reading ui file 'd:\Desktop\工具开发\Inkjet_Printing_System\GUI\MainWindow.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
