@@ -25,6 +25,11 @@ class MyWindow(QMainWindow):
         self.ValueWaveForm = None # 波形数据初值为空
 
         # ----------------------------------------------------------------------
+            # 将路径图作为组件添加到PathDisplay中
+        # ----------------------------------------------------------------------
+        self.PathDisplay= PathDisplay()
+        self.main_ui.PathDisplay.addWidget(self.PathDisplay)
+        # ----------------------------------------------------------------------
             # 链接槽函数
         # ----------------------------------------------------------------------
         self.main_ui.Button_Quit.clicked.connect(self.quit)  # 链接 退出 按钮
@@ -45,11 +50,8 @@ class MyWindow(QMainWindow):
     
     # 加载显示路径的槽函数
     def path_display(self):
-
         if self.ValuesCoordinate is not None:
-            pathdisplay = PathDisplay()
-            pathdisplay.graphicsView_PathDisplay = self.main_ui.graphicsView_PathDisplay
-            pathdisplay.PlotPathDisplay(self.ValuesCoordinate)
+            self.PathDisplay.UpdatePathDisplay(self.ValuesCoordinate)
         else :
             print("请选择输入文件！")
     

@@ -64,19 +64,6 @@
          </property>
         </widget>
        </item>
-       <item>
-        <widget class="QGraphicsView" name="graphicsView_PathDisplay">
-         <property name="contextMenuPolicy">
-          <enum>Qt::ActionsContextMenu</enum>
-         </property>
-         <property name="autoFillBackground">
-          <bool>true</bool>
-         </property>
-         <property name="transformationAnchor">
-          <enum>QGraphicsView::AnchorViewCenter</enum>
-         </property>
-        </widget>
-       </item>
       </layout>
      </widget>
     </item>

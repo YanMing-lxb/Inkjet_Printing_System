@@ -1,148 +1,66 @@
-'''
-main.py文件内容如下:
-```
-import sys
-from PyQt5.QtWidgets import QApplication, QMainWindow
-from GUI.Ui_MainWindow import Ui_MainWindow
-from SLOT.Slot_Main import Quit, File
-from SLOT.Slot_PathDisplay import PathDisplay
-class MyWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        # Setup UI
-        self.main_ui = Ui_MainWindow()
-        self.main_ui.setupUi(self)
-        self.setWindowTitle('3D喷墨打印控制系统')
-
-        self.ValuesCoordinate = None
-        self.ValueWaveForm = None 
-        self.main_ui.Button_FileRead.clicked.connect(self.file_read)
-        self.main_ui.Button_TrajectoryPreview.clicked.connect(self.path_display)
-    def file_read(self):
-        file = File()
-        self.ValuesCoordinate = file.FileRead()
-        if self.ValuesCoordinate is not None:
-            self.main_ui.Button_TrajectoryPreview.setEnabled(True)
-    
-    def path_display(self):
-        if self.ValuesCoordinate is not None:
-            pathdisplay = PathDisplay()
-            pathdisplay.graphicsView_PathDisplay = self.main_ui.graphicsView_PathDisplay
-            pathdisplay.PlotPathDisplay(self.ValuesCoordinate)
-        else :
-            print("请选择输入文件！")
-
-if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MyWindow()
-    window.show()
-    sys.exit(app.exec_())
-
-```
-Slot_PathDisplay.py文件内容如下:
-```
-import matplotlib.pyplot as plt
-from PyQt5 import QtWidgets
+import numpy as np
 from mpl_toolkits.mplot3d import Axes3D
-from PyQt5.QtWidgets import QVBoxLayout, QWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-import numpy as np
-
-class PathDisplay(QtWidgets.QWidget):
-    def __init__(self, parent=None):
-        super(PathDisplay, self).__init__(parent)
-        self.graphicsView_PathDisplay = None
-
-    def PlotPathDisplay(self, ValuesCoordinate):
-        fig = plt.figure()
-
-        ax = fig.add_subplot(111, projection='3d')
-
-        X = ValuesCoordinate['X']
-        Y = ValuesCoordinate['Y']
-        Z = ValuesCoordinate['Z']
-
-        ax.set_xlabel('X (mm)')
-        ax.set_ylabel('Y (mm)')
-        ax.set_zlabel('Z (mm)')
-
-        ax.plot3D(X, Y, Z, 'k--') 
-
-        for i in range(len(X) - 1):
-            vector_lengths = np.linalg.norm([X[i + 1] - X[i], Y[i + 1] - Y[i], Z[i + 1] - Z[i]])
-            ax.quiver(X[i], Y[i], Z[i], X[i + 1] - X[i], Y[i + 1] - Y[i], Z[i + 1] - Z[i],
-                      color='r',normalize = True,length=0.3*vector_lengths)
-
-        ax.scatter(X, Y, Z, c='b', marker='o', alpha=0.5)
-
-        canvas = FigureCanvas(fig)
-        layout = QVBoxLayout(self.graphicsView_PathDisplay)
-        layout.addWidget(canvas)
-
-        canvas.draw()
-```
-
-请修改代码，要求在点击Button_TrajectoryPreview后能够重新读取self.ValuesCoordinate中的数据内容并绘图
-'''
-
-import sys
-import time
-
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QPushButton
-
-import numpy as np
-
-from matplotlib.backends.backend_qtagg import FigureCanvas, NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
+import matplotlib.pyplot as plt
 
 
-class DynamicPlotWidget(QWidget):
+class PathDisplay(QWidget):
     def __init__(self, parent=None):
         super().__init__(parent)
 
-        layout = QVBoxLayout(self)
+        self.layout = QVBoxLayout(self)
 
-        dynamic_canvas = FigureCanvas(Figure(figsize=(5, 3)))
-        layout.addWidget(dynamic_canvas)
-        layout.addWidget(NavigationToolbar(dynamic_canvas, self))
+        self.figure = plt.figure(figsize=(8, 6))
+        self.canvas = FigureCanvas(self.figure)
+        self.layout.addWidget(self.canvas)
 
-        self._dynamic_ax = dynamic_canvas.figure.subplots()
-        self._line, = self._dynamic_ax.plot([], [])  # 创建空的Line2D对象
-        self.update_plot([])  # 初始化图表内容
+        self.toolbar = NavigationToolbar(self.canvas, self)
+        self.layout.addWidget(self.toolbar)
 
-    def update_plot(self, data):
-        t = np.linspace(0, 10, len(data))
-        self._line.set_data(t, data)
-        self._dynamic_ax.relim()  # 重新计算数据范围
-        self._dynamic_ax.autoscale_view(True, True, True)  # 自动缩放视图
-        self._line.figure.canvas.draw()
+        self.dynamic_ax = self.figure.add_subplot(111, projection='3d')
+        self.line = None
 
+        self.UpdatePathDisplay(pd.DataFrame())
 
-class ApplicationWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self._main = QWidget()
-        self.setCentralWidget(self._main)
-        layout = QVBoxLayout(self._main)
+    def UpdatePathDisplay(self, data, mesh_density=10):
+        if data.empty:
+            return
 
-        self.dynamic_plot_widget = DynamicPlotWidget()
-        layout.addWidget(self.dynamic_plot_widget)
+        self.line = None
 
-        self.button = QPushButton("Update Plot")
-        layout.addWidget(self.button)
+        self.dynamic_ax.clear()
 
-        self.button.clicked.connect(self.update_dynamic_plot)  # 按钮点击事件绑定到方法update_dynamic_plot
+        X = data['X']
+        Y = data['Y']
+        Z = data['Z']
 
-    def update_dynamic_plot(self):
-        # 这里以随机生成数据作为示例，您可以将您的逻辑放在这个方法里来更新动态图的数据
-        data = np.random.rand(100)
-        self.dynamic_plot_widget.update_plot(data)
+        self.dynamic_ax.set_xlabel('X', color='black')
+        self.dynamic_ax.set_ylabel('Y', color='black')
+        self.dynamic_ax.set_zlabel('Z', color='black')
 
+        x_min, x_max = X.min(), X.max()
+        y_min, y_max = Y.min(), Y.max()
+        z_min, z_max = np.nanmin(Z), np.nanmax(Z)
 
-if __name__ == "__main__":
-    qapp = QApplication(sys.argv)
+        self.dynamic_ax.set_xlim(x_min, x_max)
+        self.dynamic_ax.set_ylim(y_min, y_max)
+        self.dynamic_ax.set_zlim(z_min, z_max)
 
-    app = ApplicationWindow()
-    app.show()
+        # Create meshgrid based on data range and density
+        x_range = np.linspace(x_min, x_max, mesh_density)
+        y_range = np.linspace(y_min, y_max, mesh_density)
+        X_mesh, Y_mesh = np.meshgrid(x_range, y_range)
 
-    sys.exit(qapp.exec_())
+        # Calculate Z values for the meshgrid based on data range
+        z_mesh = np.interp(X_mesh.flatten(), X, Z)
+        z_mesh = z_mesh.reshape(X_mesh.shape)
+
+        self.dynamic_ax.scatter(X, Y, Z, c='blue', alpha=0.5)
+        self.dynamic_ax.plot_surface(X_mesh, Y_mesh, z_mesh, cmap='viridis', edgecolor='none', alpha=0.3)
+
+        if self.line is None:
+            self.line, = self.dynamic_ax.plot([], [], [], color='black', linestyle='dashed')
+
+        self.line.set_data(X, Y)
+        self.line.set_3d_properties(Z)
+
+        self.dynamic_ax.figure.canvas.draw()

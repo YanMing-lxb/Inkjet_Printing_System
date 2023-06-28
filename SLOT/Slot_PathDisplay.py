@@ -1,52 +1,84 @@
-import matplotlib.pyplot as plt
-from PyQt5 import QtWidgets
-from mpl_toolkits.mplot3d import Axes3D
-from PyQt5.QtWidgets import QVBoxLayout, QWidget
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
-
-from matplotlib.backends.backend_qt5agg import FigureCanvas, NavigationToolbar2QT as NavigationToolbar
-from matplotlib.figure import Figure
-
 import numpy as np
+import pandas as pd
+from PyQt5.QtWidgets import QWidget, QVBoxLayout
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg as FigureCanvas
+from matplotlib.backends.backend_qt5agg import NavigationToolbar2QT as NavigationToolbar
+from matplotlib.ticker import MultipleLocator
 
-class PathDisplay(QtWidgets.QWidget):
+class PathDisplay(QWidget):
     def __init__(self, parent=None):
-        super(PathDisplay, self).__init__(parent)
-        self.graphicsView_PathDisplay = None
+        super().__init__(parent)
+        layout = QVBoxLayout(self)
+        dynamic_canvas = FigureCanvas(Figure(figsize=(8, 6)))
+        layout.addWidget(dynamic_canvas)
+        layout.addWidget(NavigationToolbar(dynamic_canvas, self))
 
-    def PlotPathDisplay(self, ValuesCoordinate):
-        # 创建一个Figure对象和一个绘图区域，用于绘制三维线图
-        fig = plt.figure()
+        self.dynamic_ax = dynamic_canvas.figure.add_subplot(111, projection='3d')
+        self._line = None  # 初始化线对象
 
-        ax = fig.add_subplot(111, projection='3d')
+        self.UpdatePathDisplay(pd.DataFrame())  # 初始化图表内容
 
-        # 从ValuesCoordinate中获取X、Y、Z三维坐标数据
-        X = ValuesCoordinate['X']
-        Y = ValuesCoordinate['Y']
-        Z = ValuesCoordinate['Z']
 
-        # 设置轴标签
-        ax.set_xlabel('X (mm)')
-        ax.set_ylabel('Y (mm)')
-        ax.set_zlabel('Z (mm)')
+    def UpdatePathDisplay(self, data):
+        if data.empty:
+            return
 
-        # 绘制三维线图
-        ax.plot3D(X, Y, Z, 'k--')  # 设置路径颜色为黑色虚线
+        self._line = None  # 创建新的线对象
 
-        # 添加移动方向箭头为红色，大小统一设置为0.5
+        self.dynamic_ax.clear()  # 清空图表
+
+        X = data['X']
+        Y = data['Y']
+        Z = data['Z']
+
+        self.dynamic_ax.set_xlabel('X', color='black')
+        self.dynamic_ax.set_ylabel('Y', color='black')
+        self.dynamic_ax.set_zlabel('Z', color='black')
+
+        x_min, x_max = X.min(), X.max()
+        y_min, y_max = Y.min(), Y.max()
+        z_min, z_max = np.nanmin(Z), np.nanmax(Z)
+
+        self.dynamic_ax.set_xlim(x_min, x_max)
+        self.dynamic_ax.set_ylim(y_min, y_max)
+        self.dynamic_ax.set_zlim(z_min, z_max)
+
+        
+
+        # self.dynamic_ax.locator_params(axis='x', nbins=num)
+        # self.dynamic_ax.locator_params(axis='y', nbins=num)
+        # self.dynamic_ax.locator_params(axis='z', nbins=num)
+
+        self.dynamic_ax.scatter(X, Y, Z, c='blue', alpha=0.5)
+
         for i in range(len(X) - 1):
-            # 计算向量长度
             vector_lengths = np.linalg.norm([X[i + 1] - X[i], Y[i + 1] - Y[i], Z[i + 1] - Z[i]])
-            ax.quiver(X[i], Y[i], Z[i], X[i + 1] - X[i], Y[i + 1] - Y[i], Z[i + 1] - Z[i],
-                      color='r',normalize = True,length=0.3*vector_lengths)
+            self.dynamic_ax.quiver(X[i], Y[i], Z[i], X[i + 1] - X[i], Y[i + 1] - Y[i],
+                                    Z[i + 1] - Z[i], color='red', normalize=True, length=0.5 * vector_lengths)
 
-        # 添加蓝色的标记点，透明度设置为0.5
-        ax.scatter(X, Y, Z, c='b', marker='o', alpha=0.5)
+        if self._line is None:  # 创建线对象
+            self._line, = self.dynamic_ax.plot([], [], [], color='black', linestyle='dashed')
 
-        # 将绘制的图形显示在graphicsView中
-        canvas = FigureCanvas(fig)
-        layout = QVBoxLayout(self.graphicsView_PathDisplay)
-        layout.addWidget(canvas)
+        self._line.set_data(X, Y)  # 更新线的数据
+        self._line.set_3d_properties(Z)
 
-        # 刷新graphicsView显示
-        canvas.draw()
+        num1 = 6
+        num2 = 2
+
+        # Adjust number of tick marks based on data and num parameter
+        self.dynamic_ax.set_xticks(np.linspace(x_min, x_max, num=num1))
+        self.dynamic_ax.set_yticks(np.linspace(y_min, y_max, num=num1))
+        self.dynamic_ax.set_zticks(np.linspace(z_min, z_max, num=num1))
+
+        # 设置次刻度
+        self.dynamic_ax.set_xticks(np.linspace(x_min, x_max, num=num1*num2-1), minor=True)
+        self.dynamic_ax.set_yticks(np.linspace(y_min, y_max, num=num1*num2-1), minor=True)
+        self.dynamic_ax.set_zticks(np.linspace(z_min, z_max, num=num1*num2-1), minor=True)
+
+
+        # 显示网格
+        self.dynamic_ax.grid(which='both')
+        
+
+        self.dynamic_ax.figure.canvas.draw()
