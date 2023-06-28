@@ -1,5 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
+from PyQt5 import QtWidgets
 
 # ----------------------------------------------------------------------
     # 导入GUI主窗口界面库
@@ -12,6 +13,7 @@ from GUI.Ui_MainWindow import Ui_MainWindow
 from SLOT.Slot_Main import Quit, File
 from SLOT.Slot_InkjetSetting import InkjetSetting
 from SLOT.Slot_PathDisplay import PathDisplay
+import Slot_WaveformDisplay as SWD
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -29,6 +31,14 @@ class MyWindow(QMainWindow):
         # ----------------------------------------------------------------------
         self.PathDisplay= PathDisplay()
         self.main_ui.PathDisplay.addWidget(self.PathDisplay)
+
+
+        # 创建 RealTimePlot 实例
+        self.plot = SWD.RealTimePlot()
+        # 将PlotWidget添加到self.graphicsView中
+        layout = QtWidgets.QVBoxLayout(self.main_ui.graphicsView_WaveformDisplay)
+        layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
+        layout.addWidget(self.plot.plot_widget)
 
         # ----------------------------------------------------------------------
             # 链接槽函数
@@ -61,6 +71,7 @@ class MyWindow(QMainWindow):
         inkjetsetting = InkjetSetting()
         self.ValueWaveForm = inkjetsetting.inkjet_setting()
         if self.ValueWaveForm is not None: # 如果得到ValueWaveForm数据，则让 导出 按钮可用
+            self.plot.update_graph(self.ValueWaveForm)
             self.main_ui.Button_FileExport.setEnabled(True)
 
     # 加载导出文件的槽函数

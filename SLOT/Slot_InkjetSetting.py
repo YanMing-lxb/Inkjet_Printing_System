@@ -1,5 +1,8 @@
 from GUI.Ui_InkjetSetting import Ui_Dialog  # 导入自动生成的UI文件Ui_Dialog
 from PyQt5 import QtWidgets, QtCore
+import Slot_WaveformDisplay as SWD
+
+
 
 # ----------------------------------------------------------------------
 # 喷墨设置类
@@ -10,16 +13,25 @@ class InkjetSetting(QtWidgets.QWidget):
 # ----------------------------------------------------------------------
         # 喷墨设置对话框类
 # ----------------------------------------------------------------------   
-        class InkjetSettingDialog(QtWidgets.QDialog, Ui_Dialog):
+        class InkjetSettingDialog(QtWidgets.QDialog, Ui_Dialog,):
             # 构造函数
             def __init__(self):
                 # 调用QDialog的构造函数，初始化
                 super().__init__()
-
+                
                 # 使用Ui_Dialog中的方法创建对话框
                 self.setupUi(self)
                 # 初始化对话框上的控件值
                 self.load_settings()
+                
+                # 创建 RealTimePlot 实例
+                self.plot = SWD.RealTimePlot()
+                # 将PlotWidget添加到self.graphicsView中
+                layout = QtWidgets.QVBoxLayout(self.graphicsView)
+                layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
+                layout.addWidget(self.plot.plot_widget)
+                
+                
 
                 # 监听输入值的变化，运行槽函数
                 self.TimeRise1.valueChanged.connect(self.WaveformDisplay) 
@@ -77,7 +89,19 @@ class InkjetSetting(QtWidgets.QWidget):
                         self.VoltageDwell.value(),
                         self.VoltageEcho.value()
                     ]
-                print(values)
+                Coordinate = [
+                    [0,values[5]],
+                    [sum(values[:1]),values[6]],
+                    [sum(values[:2]),values[6]],
+                    [sum(values[:3]),values[7]],
+                    [sum(values[:4]),values[7]],
+                    [sum(values[:5]),values[5]],
+                ]
+                
+                self.plot.update_graph(Coordinate)
+
+                
+                
 
         # 创建InkjetSettingDialog对象
         dialog = InkjetSettingDialog()
@@ -99,9 +123,16 @@ class InkjetSetting(QtWidgets.QWidget):
                 dialog.VoltageDwell.value(),
                 dialog.VoltageEcho.value()
             ]
-            #print打印列表values
-            print(values)
-            
-            return values
+            Coordinate = [
+                [0,values[5]],
+                [sum(values[:1]),values[6]],
+                [sum(values[:2]),values[6]],
+                [sum(values[:3]),values[7]],
+                [sum(values[:4]),values[7]],
+                [sum(values[:5]),values[5]],
+            ]
+            print(Coordinate)
+
+            return Coordinate
             
     

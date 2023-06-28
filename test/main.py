@@ -1,40 +1,23 @@
+import pyqtgraph as pg
+from pyqtgraph.Qt import QtCore, QtGui
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from gui import GUI
-from Slot_A import Slot_A
-from Slot_B import Slot_B
-import sys
 
-class MyWindow(QMainWindow):
-    def __init__(self):
-        super().__init__()
-        self.setWindowTitle('My Window')
+app = QtGui.QApplication([])
+win = pg.GraphicsLayoutWidget()
+win.show()
 
-        self.gui = GUI()
-        self.gui.button_a.clicked.connect(self.run_slot_a)
-        self.gui.button_b.clicked.connect(self.run_slot_b)
+p = win.addPlot()
 
-        self.setCentralWidget(self.gui)
+def waveform_display(values):
+    x = []
+    y = []
+    for point in values:
+        x.append(point[0])
+        y.append(point[1])
+    p.plot(x, y, pen='b')
 
-        self.C = None
-
-    def run_slot_a(self):
-        slot_a = Slot_A()
-        self.C = slot_a.calculate_C()
-        print('Signal C calculated:', self.C)
-        self.gui.button_b.setEnabled(True)
-        
-
-    def run_slot_b(self):
-        if self.C is not None:
-            slot_b = Slot_B()
-            result = slot_b.calculate_sum(self.C)
-            print('Signal C sum:', result)
-        else:
-            print('Signal C is not calculated yet!')
-
+values = [[0, 0], [1, 1], [2, 0], [3, -1]]  # 示例输入数据
+waveform_display(values)
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MyWindow()
-    window.show()
-    sys.exit(app.exec_())
+    app.exec_()
