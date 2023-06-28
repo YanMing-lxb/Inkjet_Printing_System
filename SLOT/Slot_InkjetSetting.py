@@ -21,8 +21,6 @@ class InkjetSetting(QtWidgets.QWidget):
                 
                 # 使用Ui_Dialog中的方法创建对话框
                 self.setupUi(self)
-                # 初始化对话框上的控件值
-                self.load_settings()
                 
                 # 创建 RealTimePlot 实例
                 self.plot = SWD.RealTimePlot()
@@ -30,9 +28,10 @@ class InkjetSetting(QtWidgets.QWidget):
                 layout = QtWidgets.QVBoxLayout(self.graphicsView)
                 layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
                 layout.addWidget(self.plot.plot_widget)
-                
-                
 
+                # 初始化对话框上的控件值
+                self.load_settings()
+                
                 # 监听输入值的变化，运行槽函数
                 self.TimeRise1.valueChanged.connect(self.WaveformDisplay) 
                 self.TimeDwell.valueChanged.connect(self.WaveformDisplay)
@@ -62,6 +61,31 @@ class InkjetSetting(QtWidgets.QWidget):
                 self.VoltageIdle.setValue(settings.value('VoltageIdle', 0))
                 self.VoltageDwell.setValue(settings.value('VoltageDwell', 0))
                 self.VoltageEcho.setValue(settings.value('VoltageEcho', 0))
+
+                values = [
+                    settings.value('TimeRise1', 0), 
+                    settings.value('TimeDwell', 0),
+                    settings.value('TimeFall', 0), 
+                    settings.value('TimeEcho', 0),
+                    settings.value('TimeRise2', 0),
+                    settings.value('VoltageIdle', 0),
+                    settings.value('VoltageDwell', 0),
+                    settings.value('VoltageEcho', 0)
+                ]
+            
+                Coordinate = [
+                    [0,values[5]],
+                    [sum(values[:1]),values[6]],
+                    [sum(values[:2]),values[6]],
+                    [sum(values[:3]),values[7]],
+                    [sum(values[:4]),values[7]],
+                    [sum(values[:5]),values[5]]
+                ]
+
+                self.plot.update_graph(Coordinate)
+
+
+
 
             #将当前设置的值更新到名为"MyApp"，对应key为"InkjetSettings"的QSettings对象
             def save_settings(self):
@@ -131,8 +155,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 [sum(values[:4]),values[7]],
                 [sum(values[:5]),values[5]],
             ]
-            print(Coordinate)
-
+            
             return Coordinate
             
     

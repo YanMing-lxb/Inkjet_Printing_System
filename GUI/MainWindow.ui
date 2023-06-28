@@ -40,7 +40,7 @@
      <widget class="QFrame" name="frame_show1">
       <property name="minimumSize">
        <size>
-        <width>500</width>
+        <width>350</width>
         <height>300</height>
        </size>
       </property>
@@ -71,7 +71,7 @@
      <widget class="QFrame" name="frame_show2">
       <property name="minimumSize">
        <size>
-        <width>500</width>
+        <width>350</width>
         <height>200</height>
        </size>
       </property>
