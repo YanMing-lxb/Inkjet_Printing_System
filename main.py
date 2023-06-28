@@ -45,9 +45,11 @@ class MyWindow(QMainWindow):
     
     # 加载显示路径的槽函数
     def path_display(self):
+
         if self.ValuesCoordinate is not None:
             pathdisplay = PathDisplay()
-            pathdisplay.ValueInput(self.ValuesCoordinate)
+            pathdisplay.graphicsView_PathDisplay = self.main_ui.graphicsView_PathDisplay
+            pathdisplay.PlotPathDisplay(self.ValuesCoordinate)
         else :
             print("请选择输入文件！")
     
