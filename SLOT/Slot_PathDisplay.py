@@ -32,9 +32,9 @@ class PathDisplay(QWidget):
         Y = data['Y']
         Z = data['Z']
 
-        self.dynamic_ax.set_xlabel('X', color='black')
-        self.dynamic_ax.set_ylabel('Y', color='black')
-        self.dynamic_ax.set_zlabel('Z', color='black')
+        self.dynamic_ax.set_xlabel('X (mm)', color='black')
+        self.dynamic_ax.set_ylabel('Y (mm)', color='black')
+        self.dynamic_ax.set_zlabel('Z (mm)', color='black')
 
         x_min, x_max = X.min(), X.max()
         y_min, y_max = Y.min(), Y.max()
@@ -63,22 +63,23 @@ class PathDisplay(QWidget):
         self._line.set_data(X, Y)  # 更新线的数据
         self._line.set_3d_properties(Z)
 
-        num1 = 6
-        num2 = 2
+        num = 6 # 主刻度数目
 
-        # Adjust number of tick marks based on data and num parameter
-        self.dynamic_ax.set_xticks(np.linspace(x_min, x_max, num=num1))
-        self.dynamic_ax.set_yticks(np.linspace(y_min, y_max, num=num1))
-        self.dynamic_ax.set_zticks(np.linspace(z_min, z_max, num=num1))
+        # 设置主刻度数目
+        self.dynamic_ax.set_xticks(np.linspace(x_min, x_max, num=num))
+        self.dynamic_ax.set_yticks(np.linspace(y_min, y_max, num=num))
+        self.dynamic_ax.set_zticks(np.linspace(z_min, z_max, num=num))
 
-        # 设置次刻度
-        self.dynamic_ax.set_xticks(np.linspace(x_min, x_max, num=num1*num2-1), minor=True)
-        self.dynamic_ax.set_yticks(np.linspace(y_min, y_max, num=num1*num2-1), minor=True)
-        self.dynamic_ax.set_zticks(np.linspace(z_min, z_max, num=num1*num2-1), minor=True)
+        # 设置次刻度输入
+        self.dynamic_ax.set_xticks(np.linspace(x_min, x_max, num=num*2-1), minor=True)
+        self.dynamic_ax.set_yticks(np.linspace(y_min, y_max, num=num*2-1), minor=True)
+        self.dynamic_ax.set_zticks(np.linspace(z_min, z_max, num=num*2-1), minor=True)
 
 
         # 显示网格
         self.dynamic_ax.grid(which='both')
         
-
+        # 调用tight_layout()设置为tight layout模式
+        self.dynamic_ax.figure.tight_layout()
+        # 绘制图像
         self.dynamic_ax.figure.canvas.draw()
