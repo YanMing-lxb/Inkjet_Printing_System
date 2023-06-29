@@ -1,8 +1,7 @@
 from GUI.Ui_InkjetSetting import Ui_Dialog  # 导入自动生成的UI文件Ui_Dialog
 from PyQt5 import QtWidgets, QtCore
 from SLOT.Slot_WaveformDisplay import RealTimePlot as RTP
-
-
+from PyQt5.QtGui import QIcon
 
 # ----------------------------------------------------------------------
 # 喷墨设置类
@@ -18,6 +17,10 @@ class InkjetSetting(QtWidgets.QWidget):
             def __init__(self):
                 super().__init__()
                 self.setupUi(self) # 使用Ui_Dialog中的方法创建对话框
+
+                # 设置对话框图标
+                icon = QIcon("ICON/Inkjet-setting.png")  # 替换为你的图标文件的路径
+                self.setWindowIcon(icon)
 
                 # ----------------------------------------------------------------------
                     # 将绘制的波形图做成组件添加到对话框中的self.graphicsView组件中

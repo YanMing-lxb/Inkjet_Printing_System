@@ -1,6 +1,7 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets
+from PyQt5.QtGui import QIcon
 
 # ----------------------------------------------------------------------
     # 导入GUI主窗口界面库
@@ -22,6 +23,10 @@ class MyWindow(QMainWindow):
         self.main_ui = UMW()
         self.main_ui.setupUi(self)
         self.setWindowTitle('3D喷墨打印控制系统')
+
+        icon = QIcon("ICON/Printing.png")  # 替换为你的图标文件的路径
+
+        self.setWindowIcon(icon)  # 设置窗口图标
 
         self.ValuesCoordinate = None # 读取到的坐标数据初值为空
         self.ValueWaveForm = None # 波形数据初值为空
@@ -96,3 +101,11 @@ if __name__ == '__main__':
     window = MyWindow()  # 创建一个自定义窗口对象
     window.show()  # 显示窗口
     sys.exit(app.exec_())  # 进入应用程序的主循环，等待退出信号，然后终止程序并返回退出代码
+
+
+'''pyinstaller打包命令
+pyinstaller -Fw main
+
+-w:不显示终端
+-F:将所有的库打包成一个单独的文件
+'''
