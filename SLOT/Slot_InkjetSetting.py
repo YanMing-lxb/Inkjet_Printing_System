@@ -1,6 +1,6 @@
 from GUI.Ui_InkjetSetting import Ui_Dialog  # 导入自动生成的UI文件Ui_Dialog
 from PyQt5 import QtWidgets, QtCore
-import SLOT.Slot_WaveformDisplay as SWD
+from SLOT.Slot_WaveformDisplay import RealTimePlot as RTP
 
 
 
@@ -22,7 +22,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 # ----------------------------------------------------------------------
                     # 将绘制的波形图做成组件添加到对话框中的self.graphicsView组件中
                 # ----------------------------------------------------------------------
-                self.plot = SWD.RealTimePlot() # 创建 RealTimePlot 实例
+                self.plot = RTP() # 创建 RealTimePlot 实例
                 layout = QtWidgets.QVBoxLayout(self.graphicsView) # 将PlotWidget添加到self.graphicsView中
                 layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
                 layout.addWidget(self.plot.plot_widget)
