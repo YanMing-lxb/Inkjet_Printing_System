@@ -1,6 +1,6 @@
 from GUI.Ui_InkjetSetting import Ui_Dialog  # 导入自动生成的UI文件Ui_Dialog
 from PyQt5 import QtWidgets, QtCore
-import Slot_WaveformDisplay as SWD
+import SLOT.Slot_WaveformDisplay as SWD
 
 
 
@@ -21,7 +21,9 @@ class InkjetSetting(QtWidgets.QWidget):
                 
                 # 使用Ui_Dialog中的方法创建对话框
                 self.setupUi(self)
-                
+# ----------------------------------------------------------------------
+                # 将绘制的波形图做成组件添加到对话框中的self.graphicsView组件中
+# ----------------------------------------------------------------------
                 # 创建 RealTimePlot 实例
                 self.plot = SWD.RealTimePlot()
                 # 将PlotWidget添加到self.graphicsView中
@@ -47,7 +49,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 # 绑定"取消"按钮的信号槽，将其连接到reject函数
                 self.buttonBox.rejected.connect(self.reject)
 
-            # 读取之前存储的参数，并将其设置到控件上
+            # 读取之前存储的参数，并将其设置到控件上，并绘制波形图
             def load_settings(self):
                 # 获取名为"MyApp"，对应key为"InkjetSettings"的QSettings对象，以便获取之前设置的值
                 settings = QtCore.QSettings('YanMing', 'Inkjet Printing')
@@ -81,7 +83,7 @@ class InkjetSetting(QtWidgets.QWidget):
                     [sum(values[:4]),values[7]],
                     [sum(values[:5]),values[5]]
                 ]
-
+                # 绘制波形图
                 self.plot.update_graph(Coordinate)
 
 
@@ -102,7 +104,9 @@ class InkjetSetting(QtWidgets.QWidget):
                 settings.setValue('VoltageDwell', self.VoltageDwell.value())
                 settings.setValue('VoltageEcho', self.VoltageEcho.value())
 
+            # 监控数值变化时，被调用来绘制波形图的槽函数
             def WaveformDisplay(self):
+                # 获取数值
                 values = [
                         self.TimeRise1.value(),
                         self.TimeDwell.value(),
@@ -113,6 +117,7 @@ class InkjetSetting(QtWidgets.QWidget):
                         self.VoltageDwell.value(),
                         self.VoltageEcho.value()
                     ]
+                # 将获取到的数值转换成类型为二维数组的坐标
                 Coordinate = [
                     [0,values[5]],
                     [sum(values[:1]),values[6]],
@@ -121,7 +126,7 @@ class InkjetSetting(QtWidgets.QWidget):
                     [sum(values[:4]),values[7]],
                     [sum(values[:5]),values[5]],
                 ]
-                
+                # 绘制波形图
                 self.plot.update_graph(Coordinate)
 
                 
@@ -147,6 +152,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 dialog.VoltageDwell.value(),
                 dialog.VoltageEcho.value()
             ]
+            # 将获取到的数值转换成类型为二维数组的坐标
             Coordinate = [
                 [0,values[5]],
                 [sum(values[:1]),values[6]],
@@ -155,7 +161,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 [sum(values[:4]),values[7]],
                 [sum(values[:5]),values[5]],
             ]
-            
+            # 返回坐标数据
             return Coordinate
             
     

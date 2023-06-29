@@ -13,7 +13,7 @@ from GUI.Ui_MainWindow import Ui_MainWindow
 from SLOT.Slot_Main import Quit, File
 from SLOT.Slot_InkjetSetting import InkjetSetting
 from SLOT.Slot_PathDisplay import PathDisplay
-import Slot_WaveformDisplay as SWD
+import SLOT.Slot_WaveformDisplay as SWD
 
 class MyWindow(QMainWindow):
     def __init__(self):
@@ -27,12 +27,14 @@ class MyWindow(QMainWindow):
         self.ValueWaveForm = None # 波形数据初值为空
 
         # ----------------------------------------------------------------------
-            # 将路径图作为组件添加到PathDisplay中
+            # 将路径图作为组件添加到主UI界面的self.PathDisplay组件中
         # ----------------------------------------------------------------------
         self.PathDisplay= PathDisplay()
         self.main_ui.PathDisplay.addWidget(self.PathDisplay)
 
-
+        # ----------------------------------------------------------------------
+            # 将绘制的波形图做成组件添加到主UI界面的self.graphicsView_WaveformDisplay组件中
+        # ----------------------------------------------------------------------
         # 创建 RealTimePlot 实例
         self.plot = SWD.RealTimePlot()
         # 将PlotWidget添加到self.graphicsView中
@@ -54,34 +56,34 @@ class MyWindow(QMainWindow):
     # ----------------------------------------------------------------------
     # 加载读取文件的槽函数
     def file_read(self):
-        file = File()
-        self.ValuesCoordinate = file.FileRead()
-        if self.ValuesCoordinate is not None: # 如果读取到数值，则让 轨迹预览 按钮可用
-            self.main_ui.Button_TrajectoryPreview.setEnabled(True)
+        file = File() # 初始化文件类
+        self.ValuesCoordinate = file.FileRead() # 将从excel文件中读取的路径数据赋予self.ValuesCoordinate参数
+        if self.ValuesCoordinate is not None:
+            self.main_ui.Button_TrajectoryPreview.setEnabled(True) # 让 轨迹预览 按钮可用
     
     # 加载显示路径的槽函数
     def path_display(self):
-        if self.ValuesCoordinate is not None:
-            self.PathDisplay.UpdatePathDisplay(self.ValuesCoordinate)
+        if self.ValuesCoordinate is not None: # 如果读取到路径数据，则显示路径
+            self.PathDisplay.UpdatePathDisplay(self.ValuesCoordinate) # 根据路径数据绘制路径图
         else :
             print("请选择输入文件！")
     
     # 加载喷墨设置的槽函数
     def injet_setting(self):
-        inkjetsetting = InkjetSetting()
-        self.ValueWaveForm = inkjetsetting.inkjet_setting()
-        if self.ValueWaveForm is not None: # 如果得到ValueWaveForm数据，则让 导出 按钮可用
-            self.plot.update_graph(self.ValueWaveForm)
-            self.main_ui.Button_FileExport.setEnabled(True)
+        inkjetsetting = InkjetSetting() # 初始化喷墨设置
+        self.ValueWaveForm = inkjetsetting.inkjet_setting() # 将从弹窗中读到的波形数据赋予self.ValueWaveForm参数
+        if self.ValueWaveForm is not None: 
+            self.plot.update_graph(self.ValueWaveForm) # 绘制主界面的波形图
+            self.main_ui.Button_FileExport.setEnabled(True) # 让 导出 按钮可用
 
     # 加载导出文件的槽函数
     def file_export(self):
-        file = File()
-        file.FileExport()
+        file = File() # 初始化文件类
+        file.FileExport() # 导出文件
     
     # 加载退出程序的槽函数
     def quit(self):
-        quit_ = Quit()
+        quit_ = Quit() # 初始化退出类
         quit_.QuitClick()
 
 
