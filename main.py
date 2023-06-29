@@ -5,21 +5,21 @@ from PyQt5 import QtWidgets
 # ----------------------------------------------------------------------
     # 导入GUI主窗口界面库
 # ----------------------------------------------------------------------   
-from GUI.Ui_MainWindow import Ui_MainWindow
+from GUI.Ui_MainWindow import Ui_MainWindow as UMW
 
 # ----------------------------------------------------------------------
     # 导入槽函数库
 # ----------------------------------------------------------------------   
 from SLOT.Slot_Main import Quit, File
-from SLOT.Slot_InkjetSetting import InkjetSetting
-from SLOT.Slot_PathDisplay import PathDisplay
-import SLOT.Slot_WaveformDisplay as SWD
+from SLOT.Slot_InkjetSetting import InkjetSetting as IJS
+from SLOT.Slot_PathDisplay import PathDisplay as PD
+from SLOT.Slot_WaveformDisplay import RealTimePlot as RTP
 
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Setup UI
-        self.main_ui = Ui_MainWindow()
+        self.main_ui = UMW()
         self.main_ui.setupUi(self)
         self.setWindowTitle('3D喷墨打印控制系统')
 
@@ -29,14 +29,14 @@ class MyWindow(QMainWindow):
         # ----------------------------------------------------------------------
             # 将路径图作为组件添加到主UI界面的self.PathDisplay组件中
         # ----------------------------------------------------------------------
-        self.PathDisplay= PathDisplay()
+        self.PathDisplay= PD()
         self.main_ui.PathDisplay.addWidget(self.PathDisplay)
 
         # ----------------------------------------------------------------------
             # 将绘制的波形图做成组件添加到主UI界面的self.graphicsView_WaveformDisplay组件中
         # ----------------------------------------------------------------------
         # 创建 RealTimePlot 实例
-        self.plot = SWD.RealTimePlot()
+        self.plot = RTP()
         # 将PlotWidget添加到self.graphicsView中
         layout = QtWidgets.QVBoxLayout(self.main_ui.graphicsView_WaveformDisplay)
         layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
@@ -70,7 +70,7 @@ class MyWindow(QMainWindow):
     
     # 加载喷墨设置的槽函数
     def injet_setting(self):
-        inkjetsetting = InkjetSetting() # 初始化喷墨设置
+        inkjetsetting = IJS() # 初始化喷墨设置
         self.ValueWaveForm = inkjetsetting.inkjet_setting() # 将从弹窗中读到的波形数据赋予self.ValueWaveForm参数
         if self.ValueWaveForm is not None: 
             self.plot.update_graph(self.ValueWaveForm) # 绘制主界面的波形图
