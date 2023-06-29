@@ -104,8 +104,13 @@ if __name__ == '__main__':
 
 
 '''pyinstaller打包命令
-pyinstaller -Fw main
+pyinstaller -Fw main.py
+
+pyinstaller --onefile --clean main.py
+使用上述命令后，PyInstaller将会将你的脚本文件和所有依赖项编译成一个单独的可执行文件，并且自动清除生成的临时文件和缓存文件。
 
 -w:不显示终端
 -F:将所有的库打包成一个单独的文件
+
+pyinstaller --onefile --clean --icon=ICON/Printing.png main.py
 '''
