@@ -91,7 +91,8 @@ class MyWindow(QMainWindow):
 # ----------------------------------------------------------------------
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    window = MyWindow()
-    window.show()
-    sys.exit(app.exec_())
+    # 确保脚本在直接运行时才会执行以下代码，而在作为模块导入时不会执行
+    app = QApplication(sys.argv)  # 创建一个QApplication实例，作为应用程序的主对象
+    window = MyWindow()  # 创建一个自定义窗口对象
+    window.show()  # 显示窗口
+    sys.exit(app.exec_())  # 进入应用程序的主循环，等待退出信号，然后终止程序并返回退出代码
