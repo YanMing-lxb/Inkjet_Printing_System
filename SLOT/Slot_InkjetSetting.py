@@ -16,18 +16,14 @@ class InkjetSetting(QtWidgets.QWidget):
         class InkjetSettingDialog(QtWidgets.QDialog, Ui_Dialog,):
             # 构造函数
             def __init__(self):
-                # 调用QDialog的构造函数，初始化
                 super().__init__()
-                
-                # 使用Ui_Dialog中的方法创建对话框
-                self.setupUi(self)
-# ----------------------------------------------------------------------
-                # 将绘制的波形图做成组件添加到对话框中的self.graphicsView组件中
-# ----------------------------------------------------------------------
-                # 创建 RealTimePlot 实例
-                self.plot = SWD.RealTimePlot()
-                # 将PlotWidget添加到self.graphicsView中
-                layout = QtWidgets.QVBoxLayout(self.graphicsView)
+                self.setupUi(self) # 使用Ui_Dialog中的方法创建对话框
+
+                # ----------------------------------------------------------------------
+                    # 将绘制的波形图做成组件添加到对话框中的self.graphicsView组件中
+                # ----------------------------------------------------------------------
+                self.plot = SWD.RealTimePlot() # 创建 RealTimePlot 实例
+                layout = QtWidgets.QVBoxLayout(self.graphicsView) # 将PlotWidget添加到self.graphicsView中
                 layout.setContentsMargins(0, 0, 0, 0)  # 设置边距为0
                 layout.addWidget(self.plot.plot_widget)
 
