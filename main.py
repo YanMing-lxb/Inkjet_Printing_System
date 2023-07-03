@@ -1,4 +1,29 @@
+'''
+ =======================================================================
+ ····Y88b···d88P················888b·····d888·d8b·······················
+ ·····Y88b·d88P·················8888b···d8888·Y8P·······················
+ ······Y88o88P··················88888b·d88888···························
+ ·······Y888P··8888b···88888b···888Y88888P888·888·88888b·····d88b·······
+ ········888······"88b·888·"88b·888·Y888P·888·888·888·"88b·d88P"88b·····
+ ········888···d888888·888··888·888··Y8P··888·888·888··888·888··888·····
+ ········888··888··888·888··888·888···"···888·888·888··888·Y88b·888·····
+ ········888··"Y888888·888··888·888·······888·888·888··888··"Y88888·····
+ ·······························································888·····
+ ··························································Y8b·d88P·····
+ ···························································"Y88P"······
+ =======================================================================
+
+Author       : 焱铭
+Date         : 2023-06-26 09:52:25 +0800
+LastEditTime : 2023-07-04 00:05:35 +0800
+Github       : https://github.com/YanMing-lxb/
+FilePath     : \Inkjet_Printing_System\main.py
+Description  : 
+------------------------------------------------------------------------
+'''
+
 import sys
+import os
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5 import QtWidgets
 from PyQt5.QtGui import QIcon
@@ -16,15 +41,29 @@ from SLOT.Slot_InkjetSetting import InkjetSetting as IJS
 from SLOT.Slot_PathDisplay import PathDisplay as PD
 from SLOT.Slot_WaveformDisplay import RealTimePlot as RTP
 
+# ----------------------------------------------------------------------
+    # 打包后资源文件目录访问
+# ----------------------------------------------------------------------   
+def source_path(relative_path):
+    # 是否Bundle Resource
+    if getattr(sys, 'frozen', False):
+        base_path = sys._MEIPASS
+    else:
+        base_path = os.path.abspath(".")
+    return os.path.join(base_path, relative_path)
+
+# ----------------------------------------------------------------------
+    # 主程序
+# ----------------------------------------------------------------------   
 class MyWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         # Setup UI
         self.main_ui = UMW()
         self.main_ui.setupUi(self)
-        self.setWindowTitle('3D喷墨打印控制系统')
+        self.setWindowTitle('3D喷墨打印系统')
 
-        icon = QIcon("ICON/Printing.png")  # 替换为你的图标文件的路径
+        icon = QIcon("Resource_files/Printing.png")  # 替换为你的图标文件的路径
 
         self.setWindowIcon(icon)  # 设置窗口图标
 
@@ -96,6 +135,11 @@ class MyWindow(QMainWindow):
 # ----------------------------------------------------------------------
 
 if __name__ == '__main__':
+    # 修改当前工作目录，使得资源文件可以被正确访问
+    cd = source_path('')
+    os.chdir(cd)
+
+
     # 确保脚本在直接运行时才会执行以下代码，而在作为模块导入时不会执行
     app = QApplication(sys.argv)  # 创建一个QApplication实例，作为应用程序的主对象
     window = MyWindow()  # 创建一个自定义窗口对象
@@ -112,5 +156,5 @@ pyinstaller --onefile --clean main.py
 -w:不显示终端
 -F:将所有的库打包成一个单独的文件
 
-pyinstaller main.py -wF --icon=ICON/Printing.png --add-data ICON/Printing.png;ICON --add-data ICON/Inkjet-setting.png;ICON --clean --distpath
+pyinstaller main.py -wF --icon=Resource_files/Printing.png --add-data Resource_files/Printing.png;Resource_files --add-data Resource_files/Inkjet-setting.png;Resource_files --clean --distpath
 '''
