@@ -112,5 +112,5 @@ pyinstaller --onefile --clean main.py
 -w:不显示终端
 -F:将所有的库打包成一个单独的文件
 
-pyinstaller --onefile --clean --icon=ICON/Printing.png main.py
+pyinstaller main.py -wF --icon=ICON/Printing.png --add-data ICON/Printing.png;ICON --add-data ICON/Inkjet-setting.png;ICON --clean --distpath
 '''
