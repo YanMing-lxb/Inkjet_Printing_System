@@ -14,16 +14,8 @@
  =======================================================================
 
 Author       : 焱铭
-Date         : 2023-06-29 15:45:39 +0800
-<<<<<<< HEAD
-<<<<<<< HEAD
-LastEditTime : 2023-07-04 15:34:43 +0800
-=======
-LastEditTime : 2023-07-03 23:58:27 +0800
->>>>>>> 224a729aa239968fb26fa721f91d112dd2f35064
-=======
-LastEditTime : 2023-07-03 23:58:27 +0800
->>>>>>> 224a729aa239968fb26fa721f91d112dd2f35064
+Date         : 2023-07-04 15:17:47 +0800
+LastEditTime : 2023-07-04 15:55:47 +0800
 Github       : https://github.com/YanMing-lxb/
 FilePath     : \Inkjet_Printing_System\build.py
 Description  : 
@@ -72,7 +64,8 @@ def build_pyinstaller(exe_name, resource, icon_pic):
 
 if __name__ == '__main__':
     # 设置参数
-    file_name = '3D喷墨打印系统 v1.0'  # 可执行文件名
+    version = 'v1.0'
+    file_name = f'3D喷墨打印系统 {version}'  # 可执行文件名
     resource = "IPS-Resource" # 资源文件夹名
     icon_pic = 'Printing.png'  # 图标文件名
     des_folder = 'Releases'  # 将生成的exe移动到的目标文件夹名
