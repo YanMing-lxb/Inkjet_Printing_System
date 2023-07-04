@@ -15,7 +15,7 @@
 
 Author       : 焱铭
 Date         : 2023-06-26 22:02:20 +0800
-LastEditTime : 2023-07-03 23:52:29 +0800
+LastEditTime : 2023-07-04 15:08:45 +0800
 Github       : https://github.com/YanMing-lxb/
 FilePath     : \Inkjet_Printing_System\SLOT\Slot_InkjetSetting.py
 Description  : 
@@ -43,7 +43,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 self.setupUi(self) # 使用Ui_Dialog中的方法创建对话框
 
                 # 设置对话框图标
-                icon = QIcon("Resource_files/Inkjet-setting.png")  # 替换为你的图标文件的路径
+                icon = QIcon("YM-Resource/Inkjet-setting.png")  # 替换为你的图标文件的路径
                 self.setWindowIcon(icon)
 
                 # ----------------------------------------------------------------------

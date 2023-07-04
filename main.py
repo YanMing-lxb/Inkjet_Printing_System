@@ -15,7 +15,7 @@
 
 Author       : 焱铭
 Date         : 2023-06-26 09:52:25 +0800
-LastEditTime : 2023-07-04 00:05:35 +0800
+LastEditTime : 2023-07-04 11:04:56 +0800
 Github       : https://github.com/YanMing-lxb/
 FilePath     : \Inkjet_Printing_System\main.py
 Description  : 

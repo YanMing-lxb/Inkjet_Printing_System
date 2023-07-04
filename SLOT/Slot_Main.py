@@ -25,7 +25,8 @@ Description  :
 from PyQt5.QtWidgets import QApplication, QFileDialog
 from PyQt5.QtCore import QObject, QDir
 import pandas as pd
-
+import os
+import sys
 # ----------------------------------------------------------------------
     # 退出应用程序类
 # ----------------------------------------------------------------------   
@@ -44,6 +45,13 @@ class File(QObject):
         dialog = QFileDialog()
         dialog.setFileMode(QFileDialog.AnyFile)
         dialog.setFilter(QDir.Files)
+
+        # 获取程序运行时的当前路径
+        current_path = os.path.dirname(sys.argv[0])
+        
+        # 设置默认打开位置为当前程序所在位置
+        dialog.setDirectory(current_path)
+
         # 限定文件类型为Excel文件
         dialog.setNameFilter('Excel Files (*.xlsx;*.xls)') 
         if dialog.exec():
