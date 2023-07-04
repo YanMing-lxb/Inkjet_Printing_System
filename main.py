@@ -63,7 +63,7 @@ class MyWindow(QMainWindow):
         self.main_ui.setupUi(self)
         self.setWindowTitle('3D喷墨打印系统')
 
-        icon = QIcon("Resource_files/Printing.png")  # 替换为你的图标文件的路径
+        icon = QIcon("IPS-Resource/Printing.png")  # 替换为你的图标文件的路径
 
         self.setWindowIcon(icon)  # 设置窗口图标
 

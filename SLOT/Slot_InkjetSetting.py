@@ -43,7 +43,7 @@ class InkjetSetting(QtWidgets.QWidget):
                 self.setupUi(self) # 使用Ui_Dialog中的方法创建对话框
 
                 # 设置对话框图标
-                icon = QIcon("YM-Resource/Inkjet-setting.png")  # 替换为你的图标文件的路径
+                icon = QIcon("IPS-Resource/Inkjet-setting.png")  # 替换为你的图标文件的路径
                 self.setWindowIcon(icon)
 
                 # ----------------------------------------------------------------------
